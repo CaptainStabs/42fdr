@@ -441,7 +441,7 @@ def parseKmlFile(config: Config, trackFile: TextIO) -> FdrFlight:
     fdrFlight.timezone = config.timezoneKML if config.timezoneKML is not None else config.timezone
 
     track = trackPlacemark.find("gx:Track", ns)
-    times = [datetime.fromisoformat(when.text.replace("Z", "+00:00"))
+    times = [datetime.fromisoformat(re.sub(r'\.(\d{6})\d*([+-])', r'.\1\2', when.text.replace("Z", "+00:00")))
              for when in track.findall("kml:when", ns)]
     coords = [list(map(float, c.text.strip().split())) for c in track.findall("gx:coord", ns)]
 
